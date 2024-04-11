@@ -6,14 +6,40 @@ with [Lua Language Server - LuaLS](https://luals.github.io) (VS code extension).
 ## How to get help about pandoc types with LuaLS
 
 Just copy the `pandoc-types-annotations.lua` file among your sources,
-and write the following line in your code:
+and write the following lines in your code:
 
 ```lua
 ---@module "pandoc-types-annotations"
+local pandoc = pandoc ---@type pandoc
 ```
 
 `pandoc-types-annotations.lua` contains no lua code, just comments
 used by LuaLS to provide you information about pandoc types.
+
+The second line creates a local variable pointing to the global
+`pandoc` object.
+
+The `---@type pandoc` annotation is important to get help by LuaLS
+on `pandoc` modules and methods.
+
+Creating a local variable has also the side effect of speeding up your code a bit,
+especially when you make frequent calls to `pandoc.` methods.
+
+Some examples of annotations:
+
+```lua
+---@type Div
+local div
+
+local inline ---@type Inline
+
+---A function to check if a Pandoc AST element has a class.
+---@param element WithAttr An element with an Attr.
+---@return boolean
+local function hasClass(element)
+  ...
+end
+```
 
 ## Prevent `undefined-global` warnings
 

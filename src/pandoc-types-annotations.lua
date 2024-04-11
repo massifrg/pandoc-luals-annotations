@@ -1,3 +1,13 @@
+--[[
+A collection of type annotations to ease the development
+of Pandoc Lua filters and custom readers/writers
+with [Lua Language Server](https://luals.github.io).
+
+Just put the following line in your sources to get help about types by LuaLs:
+---@module "pandoc-types-annotations"
+
+]]--
+
 ---@class List A Pandoc List.
 
 ---@class EmptyList An empty List.
@@ -221,7 +231,7 @@
 
 ---@alias MetaValue MetaBool | MetaString | MetaInlines | MetaBlocks | MetaList | MetaMap
 
----@class Doc
+---@class Pandoc
 ---@field blocks Blocks
 ---@field meta Meta
 
@@ -248,7 +258,7 @@
 
 ---@class Filter
 ---@field traverse?       "topdown"|"typewise" Traversal order of this filter (default: `typewise`).
----@field Pandoc?         fun(doc: Doc): Doc|nil `nil` = leave untouched.
+---@field Pandoc?         fun(doc: Pandoc): Pandoc|nil `nil` = leave untouched.
 ---@field Blocks?         fun(blocks: List): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Inlines?        fun(inlines: List): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Plain?          fun(plain: Plain): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
@@ -313,7 +323,7 @@
 
 ---@class Input The raw input to be parsed by a custom `Reader`, as a list of sources. Use `tostring` to get a string version of the input.
 
----@alias Reader fun(input: Input, options?: ReaderOptions): Doc
+---@alias Reader fun(input: Input, options?: ReaderOptions): Pandoc
 
 ---@alias CiteMethodType "citeproc"|"natbib"|"biblatex"
 ---@alias EmailObfuscationType "none"|"references"|"javascript"
@@ -356,7 +366,7 @@
 ---@field variables? table Variables to set in template; string-indexed table.
 ---@field wrap_text? WrapTextType Option for wrapping text; one of `wrap-auto`, `wrap-none`, or `wrap-preserve`. The `wrap-` prefix may be omitted when setting this value.
 
----@alias Writer fun(doc: Doc, options: WriterOptions): string
+---@alias Writer fun(doc: Pandoc, options: WriterOptions): string
 
 ---The state of an extension (enabled, disabled, or default state)
 ---@alias ExtensionState
@@ -425,7 +435,7 @@
 ---@field Note fun(content: Blocks): Note `Note` constructor.
 ---@field OneParen string
 ---@field OrderedList fun(items: List<Blocks>, listAttributes?: ListAttributes): OrderedList `OrderedList` constructor.
----@field Pandoc fun(blocks: Blocks, meta?: Meta): Doc Pandoc document constructor.
+---@field Pandoc fun(blocks: Blocks, meta?: Meta): Pandoc Pandoc document constructor.
 ---@field Para fun(content: Inlines): Para `Para` constructor.
 ---@field Period string
 ---@field Plain fun(content: Inlines): Plain `Plain` constructor.
@@ -461,7 +471,7 @@
 ---@field mediabag PandocMediabagModule
 ---@field path PandocPathModule
 ---@field pipe fun(command: string, args: string[], input: string): string
----@field read fun(markup: string|Source[], format?: string|FormatTable, reader_options?: ReaderOptions): Doc Parse the given string into a Pandoc document.
+---@field read fun(markup: string|Source[], format?: string|FormatTable, reader_options?: ReaderOptions): Pandoc Parse the given string into a Pandoc document.
 ---@field readers table<string,boolean> Set of formats that pandoc can parse. All keys in this table can be used as the `format` value in `pandoc.read`.
 ---@field scaffolding PandocScaffoldingModule
 ---@field sha1 fun(input: string): string Computes the SHA1 hash of the given string input.
@@ -473,148 +483,207 @@
 ---@field utils PandocUtilsModule
 ---@field walk_block fun(element: Block, filter: Filter): BlockFilterResult
 ---@field walk_inline fun(element: Inline, filter: Filter): InlineFilterResult
----@field write fun(doc: Doc, format?:string|FormatTable, writer_options?: WriterOptions): string Converts a document to the given target format.
----@field write_classic fun(doc: Doc, writer_options?: WriterOptions): string Runs a classic custom Lua writer, using the functions defined in the current environment.
+---@field write fun(doc: Pandoc, format?:string|FormatTable, writer_options?: WriterOptions): string Converts a document to the given target format.
+---@field write_classic fun(doc: Pandoc, writer_options?: WriterOptions): string Runs a classic custom Lua writer, using the functions defined in the current environment.
 ---@field writers table<string,boolean> Set of formats that pandoc can generate. All keys in this table can be used as the `format` value in `pandoc.write`.
 ---@field zip PandocZipModule
 
+---Command line options and argument parsing.
 ---@class PandocCliModule
----@field parse_options fun(args: string[]): table<string,string> Parses command line arguments into pandoc options. Typically this function will be used in stand-alone pandoc Lua scripts, taking the list of arguments from the global `arg`.
 ---@field default_options table<string,any> Default CLI options, using a JSON-like representation.
+---@field parse_options fun(args: string[]): table<string,string> Parses command line arguments into pandoc options. Typically this function will be used in stand-alone pandoc Lua scripts, taking the list of arguments from the global `arg`.
 ---@field repl fun(env: table<string,string>): any Starts a read-eval-print loop (REPL). The function returns all values of the last evaluated input.
 
+---This module exposes internal pandoc functions and utility functions.
 ---@class PandocUtilsModule
----@field normalize_date
----@field run_json_filter
----@field Version
----@field sha1
----@field blocks_to_inlines
----@field to_simple_table
----@field make_sections
----@field stringify
----@field from_simple_table
----@field citeproc
----@field equals
----@field type
----@field to_roman_numeral
----@field references
+---@field blocks_to_inlines fun(blocks: Blocks, sep?: Inlines): Inlines Squash a list of blocks into a list of inlines.
+---@field citeproc fun(doc: Pandoc): Pandoc Process the citations in the file, replacing them with rendered citations and adding a bibliography.
+---@field equals fun(element1: any, element2: any): boolean Test equality of AST elements. __This function is deprecated__.
+---@field from_simple_table fun(simple_tbl: SimpleTable): Table Creates a `Table` block element from a `SimpleTable`.
+---@field make_sections fun(number_sections: boolean, baselevel: integer|nil, blocks: Blocks): Blocks Converts a list of Block elements into sections. `Div`s will be created beginning at each `Header` and containing following content until the next Header of comparable level.
+---@field normalize_date fun(date: string): string|nil Parse a date and convert (if possible) to “YYYY-MM-DD” format. Returns `nil` if normalization fails.
+---@field references fun(doc: Pandoc): table Get references defined inline in the metadata and via an external bibliography.
+---@field run_json_filter fun(doc: Pandoc, filter?: string, args?: string[]): Pandoc Filter the given doc by passing it through a JSON filter.
+---@field sha1 fun(input: string): string Computes the SHA1 hash of the given string input.
+---@field stringify fun(element: Pandoc|Meta|Block|Inline): string Converts the given element (Pandoc, Meta, Block, or Inline) into a string with all formatting removed.
+---@field to_roman_numeral fun(n: integer): string Converts an integer < 4000 to uppercase roman numeral.
+---@field to_simple_table fun(tbl: Table): SimpleTable Converts a table into an old/simple table.
+---@field type fun(value: any): string Pandoc-friendly version of Lua’s default type function, returning type information similar to what is presented in the manual.
+---@field Version fun(v: string|integer[]|integer): integer[] Creates a Version object.
 
+---Information about the formats supported by pandoc.
 ---@class PandocFormatModule
----@field extensions
----@field default_extensions
----@field from_path
----@field all_extensions
+---@field all_extensions fun(format: string): string[] Returns the list of all valid extensions for a format. No distinction is made between input and output; an extension can have an effect when reading a format but not when writing it, or _vice versa_.
+---@field default_extensions fun(format: string): string[] Returns the list of default extensions of the given format; this function does not check if the format is supported, it will return a fallback list of extensions even for unknown formats.
+---@field extensions fun(format: string): table<string,ExtensionState> Returns the extension configuration for the given format. The configuration is represented as a table with all supported extensions as keys and their default status as value, with `true` indicating that the extension is enabled by default, while `false` marks a supported extension that’s disabled.
+---@field from_path fun(path: string|string[]): string|nil Try to determine the format of file(s) by heuristic.
 
+---JSON module to work with JSON; based on the Aeson Haskell package.
 ---@class PandocJsonModule
----@field decode
----@field encode
----@field null
+---@field decode fun(str: string, pandoc_types?: boolean): any Creates a Lua object from a JSON string. The function returns an `Inline`, `Block`, `Pandoc`, `Inlines`, or `Blocks` element if the input can be decoded into represent any of those types. Otherwise the default decoding is applied, using tables, booleans, numbers, and `null` to represent the JSON value.
+---@field encode fun(object: any): string Encodes a Lua object as JSON string.
+---@field null userdata Userdata representing a JSON `null`.
 
+---Plain-text document layouting.
 ---@class PandocLayoutModule
----@field parens
----@field nest
----@field concat
----@field cblock
----@field height
----@field render
----@field nowrap
----@field flush
----@field min_offset
----@field braces
----@field rblock
----@field before_non_blank
----@field blankline
----@field vfill
----@field nestle
----@field after_break
----@field prefixed
----@field inside
----@field double_quotes
----@field hang
----@field cr
----@field is_empty
----@field brackets
----@field update_column
----@field empty
----@field blanklines
----@field offset
----@field space
----@field real_length
----@field lblock
----@field quotes
----@field chomp
----@field literal
+---@field after_break fun(text: string): Doc Creates a `Doc` which is conditionally included only if it comes at the beginning of a line.
+---@field before_non_blank fun(doc: Doc): Doc Conditionally includes the given `doc` unless it is followed by a blank space.
+---@field blankline userdata Inserts a blank line unless one exists already.
+---@field blanklines fun(n: integer): Doc Inserts blank lines unless they exist already.
+---@field braces fun(doc: Doc): Doc Puts the `doc` in curly braces.
+---@field brackets fun(doc: Doc): Doc Puts the `doc` in square brackets.
+---@field cblock fun(doc: Doc, width: integer): Doc Creates a block with the given width and content, aligned centered.
+---@field chomp fun(doc: Doc): Doc Chomps trailing blank space off of the `doc`.
+---@field concat fun(docs: Doc[], sep?: Doc): Doc Concatenates a list of `Doc`s.
+---@field cr userdata A carriage return. Does nothing if we're at the beginning of a line; otherwise inserts a newline.
+---@field double_quotes fun(doc: Doc): Doc Wraps a `Doc` in double quotes.
+---@field empty Doc The empty document.
+---@field flush fun(doc: Doc): Doc Makes a `Doc` flush against the left margin.
+---@field hang fun(doc: Doc, ind: integer, start: Doc): Doc Creates a hanging indent. The resulting `Doc` has `start` on the first line, and subsequent lines indented by `ind` spaces.
+---@field height fun(doc: Doc): integer|string Returns the height of a block or other `Doc`.
+---@field inside fun(contents: Doc, start: Doc, end: Doc): Doc Encloses a `Doc` inside a `start` and `end` `Doc`.
+---@field is_empty fun(doc: Doc): boolean Checks whether a `doc` is empty (equal to pandoc.layout.empty).
+---@field lblock fun(doc: Doc, width: integer): Doc Creates a block with the given width and content, aligned to the left.
+---@field literal fun(text: string): Doc Creates a `Doc` from a string.
+---@field min_offset fun(doc: Doc): integer|string Returns the minimal width of a `Doc` when reflowed at breakable spaces.
+---@field nest fun(doc: Doc, ind: integer): Doc Indents a `Doc` by the specified number of spaces.
+---@field nestle fun(doc: Doc): Doc Removes leading blank lines from a `Doc`.
+---@field nowrap fun(doc: Doc): Doc Makes a `Doc` non-reflowable.
+---@field offset fun(doc: Doc): integer|string Returns the width of a `Doc` as number of characters.
+---@field parens fun(doc: Doc): Doc Puts the `Doc` in parentheses. 
+---@field prefixed fun(doc: Doc, prefix: string): Doc Uses the specified string as a prefix for every line of the inside document (except the first, if not at the beginning of the line).
+---@field quotes fun(doc: Doc): Doc Wraps a `Doc` in single quotes.
+---@field rblock fun(doc: Doc, width: integer): Doc Creates a block with the given width and content, aligned to the right.
+---@field real_length fun(str: string): integer|string Returns the real length of a string in a monospace font: `0` for a combining character, `1` for a regular character, `2` for an East Asian wide character.
+---@field render fun(doc: Doc, colwidth: integer): Doc Render `Doc`. The text is reflowed on breakable spaces to match the given line length. Text is not reflowed if the line length parameter is omitted or `nil`. 
+---@field space userdata A breaking (reflowable) space.
+---@field update_column fun(doc: Doc, i: integer): integer|string Returns the column that would be occupied by the last laid out character, starting from `i`.
+---@field vfill fun(border: string): Doc An expandable border that, when placed next to a box, expands to the height of the box. Strings cycle through the list provided.
 
+---@class IteratorState An opaque value to be passed to the iterator function.
+
+---@class IteratorValue Current value of an iterator.
+
+---@alias IteratorFunction fun(state: IteratorState, value: IteratorValue)
+
+---@class MediabagItemSummary
+---@field path string Filepath of a Mediabag entry.
+---@field type string MIME type of a Mediabag entry.
+---@field length integer Length of contents of a Mediabag entry in bytes.
+
+---The `pandoc.mediabag` module allows accessing pandoc’s media storage. The "media bag" is used when `pandoc` is called with the `--extract-media` or (for HTML only) `--embed-resources` option.
 ---@class PandocMediabagModule
----@field list
----@field empty
----@field fetch
----@field fill
----@field items
----@field delete
----@field lookup
----@field write
----@field insert
+---@field delete fun(filepath: string) Removes a single entry from the media bag.
+---@field empty fun() Clear-out the media bag, deleting all items.
+---@field fetch fun(source: Source): string,string|nil,nil Fetches the given source from a URL or local file. Returns two values: the contents of the file and the MIME type (or an empty string).
+---@field fill fun(doc: Pandoc): Pandoc Fills the mediabag with the images in the given document. An image that cannot be retrieved will be replaced with a `Span` of class "image" that contains the image description.
+---@field insert fun(filepath: string, mimetype: string, contents: string) Adds a new entry to pandoc’s media bag. Replaces any existing media bag entry the same `filepath`.
+---@field items fun(): IteratorFunction,IteratorState,IteratorValue Returns an iterator triple to be used with Lua’s generic `for` statement.
+---@field list fun(): MediabagItemSummary[] Get a summary of the current media bag contents.
+---@field lookup fun(filepath: string): string,string|nil,nil Lookup a media item in the media bag, and return its MIME type and contents.
+---@field write fun(dir: string, fp?: string) Writes the contents of mediabag to the given target directory. If `fp` is given, then only the resource with the given name will be extracted.
 
+---Module for file path manipulations.
 ---@class PandocPathModule
----@field split_extension
----@field join
----@field filename
----@field is_relative
----@field is_absolute
----@field directory
----@field split
----@field separator
----@field make_relative
----@field normalize
----@field treat_strings_as_paths
----@field split_search_path
----@field search_path_separator
+---@field directory fun(filepath: string): string Gets the directory name, i.e., removes the last directory separator and everything after from the given path.
+---@field filename fun(filepath: string): string Get the file name.
+---@field is_absolute fun(filepath: string): boolean Checks whether a path is absolute, i.e. not fixed to a root.
+---@field is_relative fun(filepath: string): boolean Checks whether a path is relative or fixed to a root.
+---@field join fun(filepaths: string[]): string Join path elements back together by the directory separator.
+---@field make_relative fun(path: string, root: string, unsafe?: boolean): string Contract a filename, based on a relative path. Note that the resulting path will never introduce `..` paths, as the presence of symlinks means `../b` may not reach `a/b` if it starts from `a/c`.
+---@field normalize fun(filepath: string): string Normalizes a path.
+---@field search_path_separator string The character that is used to separate the entries in the `PATH` environment variable.
+---@field separator string The character that separates directories.
+---@field split fun(filepath: string): string[] Splits a path by the directory separator.
+---@field split_extension fun(filepath: string): string,string Splits the last extension from a file path and returns the parts. The extension, if present, includes the leading separator; if the path has no extension, then the empty string is returned as the extension.
+---@field split_search_path fun(search_path: string): string[] Takes a string and splits it on the search_path_separator character. Blank items are ignored on Windows, and converted to `.` on Posix. On Windows path elements are stripped of quotes.
+---@field treat_strings_as_paths fun() Augment the string module such that strings can be used as path objects.
 
 ---Scaffolding for custom writers.
 ---@class PandocScaffoldingModule
----@field Writer
+---@field Writer table An object to be used as a `Writer` function; the construct handles most of the boilerplate, expecting only render functions for all AST elements.
+
+---Options for the second argument of `pandoc.structure.make_sections`.
+---@class MakeSectionsOptions: table
+---@field number_sections? boolean When `true`, a number attribute containing the section number will be added to each `Header`.
+---@field base_level? integer When set, `Header` levels will be reorganized so that there are no gaps, with numbering levels shifted by the given value.
+---@field slide_level? integer When set, triggers the creation of slides at that heading level.
+
+---Options for the second argument of `pandoc.structure.split_into_chunks`.
+---@class SplitIntoChunksOptions: table
+---@field path_template? string Template used to generate the chunks' filepaths. `%n` will be replaced with the chunk number (padded with leading 0s to 3 digits), `%s` with the section number of the heading, `%h` with the (stringified) heading text, `%i` with the section identifier. For example, `"section-%s-%i.html"` might be resolved to `"section-1.2-introduction.html"`. Default is `"chunk-%n"`.
+---@field number_sections? boolean Whether sections should be numbered; default is `false`.
+---@field chunk_level? integer The heading level the document should be split into chunks. The default is to split at the top-level, i.e., `1`.
+---@field base_heading_level? integer|nil The base level to be used for numbering. Default is `nil`
 
 ---Access to the higher-level document structure, including hierarchical sections and the table of contents.
 ---@class PandocStructureModule
----@field make_sections
----@field table_of_contents
----@field slide_level
----@field split_into_chunks
+---@field make_sections fun(blocks: Blocks, opts?: MakeSectionsOptions): Blocks Puts `Blocks` into a hierarchical structure: a list of sections (each a `Div` with class "section" and first element a `Header`).
+---@field slide_level fun(blocks: Blocks|Pandoc): integer Find level of header that starts slides (defined as the least header level that occurs before a non-header/non-hrule in the blocks).
+---@field split_into_chunks fun(doc: Pandoc, opts?: SplitIntoChunksOptions): ChunkedDoc Converts a `Pandoc` document into a `ChunkedDoc`.
+---@field table_of_contents fun(toc_source: Blocks|Pandoc|ChunkedDoc, opts?: WriterOptions): BulletList Generates a table of contents for the given object.
 
+---@class CallbackResults The results of a callback when calling `pandoc.system.with_environment`, `pandoc.system.with_temporary_directory` and `pandoc.system.with_working_directory`.
+
+---Access to the system’s information and file functionality.
 ---@class PandocSystemModule
----@field list_directory
----@field make_directory
----@field environment
----@field get_working_directory
----@field with_temporary_directory
----@field os
----@field with_environment
----@field arch
----@field with_working_directory
----@field remove_directory
----@field cputime
+---@field arch string The machine architecture on which the program is running.
+---@field cputime fun(): integer Returns the number of picoseconds CPU time used by the current program. The precision of this result may vary in different versions and on different platforms.
+---@field environment fun(): table<string,string> Retrieves the entire environment as a string-indexed table.
+---@field get_working_directory fun(): string Obtain the current working directory as an absolute path.
+---@field list_directory fun(directory?: string): string[] List the contents of a directory.
+---@field make_directory fun(dirname: string, create_parent?: boolean) Create a new directory which is initially empty, or as near to empty as the operating system allows. The function throws an error if the directory cannot be created, e.g., if the parent directory does not exist or if a directory of the same name is already present.
+---@field os string The operating system on which the program is running.
+---@field remove_directory fun(dirname: string, recursive?: boolean) Remove an existing, empty directory. If `recursive` is given, then delete the directory and its contents recursively.
+---@field with_environment fun(environment: table<string,string>, callback: fun()): CallbackResults Run an action within a custom environment. Only the environment variables given by `environment` will be set, when `callback` is called. The original environment is restored after this function finishes, even if an error occurs while running the callback action.
+---@field with_temporary_directory fun(parent_dir: string, templ: string, callback: fun()): CallbackResults Create and use a temporary directory inside the given directory. The directory is deleted after the callback returns.
+---@field with_working_directory fun(directory: string, callback: fun()): CallbackResults Run an action within a different directory. This function will change the working directory to `directory`, execute `callback`, then switch back to the original working directory, even if an error occurs while running the callback action.
 
+---UTF-8 aware text manipulation functions, implemented in Haskell.
 ---@class PandocTextModule
----@field lower
----@field reverse
----@field fromencoding
----@field len
----@field upper
----@field toencoding
----@field sub
+---@field fromencoding fun(s: string, encoding?: string): string Converts a string to UTF-8.
+---@field len fun(s: string): integer Returns the length of a UTF-8 string, i.e., the number of characters.
+---@field lower fun(s: string): string Returns a copy of a UTF-8 string, converted to lowercase.
+---@field reverse fun(s: string): string Returns a copy of a UTF-8 string, with characters reversed.
+---@field sub fun(s: string, i: integer, j?: integer): string Returns a substring of a UTF-8 string, using Lua’s string indexing rules.
+---@field toencoding fun(s: string, encoding?: string): string Converts a UTF-8 string to a different encoding. The `encoding` parameter defaults to the current ANSI code page on Windows; on other platforms it will try to guess the file system’s encoding.
+---@field upper fun(s: string): string Returns a copy of a UTF-8 string, converted to uppercase.
 
+---@class Doc Reflowable plain-text document. A `Doc` value can be rendered and reflown to fit a given column width.
+---@alias BlocksWriter fun(blocks: Blocks): Doc
+---@alias InlinesWriter fun(inlines: Inlines): Doc
+
+---Handle pandoc templates.
 ---@class PandocTemplateModule
----@field meta_to_context
----@field compile
----@field default
----@field apply
+---@field apply fun(template: Template, context: table): Pandoc Applies a context with variable assignments to a template, returning the rendered template. The context parameter must be a table with variable names as keys and `Doc`, `string`, `boolean`, or `table` as values, where the table can be either be a list of the aforementioned types, or a nested context.
+---@field compile fun(template: string, templates_path?: string[]): Template Compiles a template string into a Template object usable by pandoc. If the `templates_path` parameter is specified, should be the file path associated with the template. It is used when checking for partials. Partials will be taken only from the default data files if this parameter is omitted.
+---@field default fun(writer?: string): Template Returns the default template for a given writer as a string. An error if no such template can be found. `writer` defaults to the global `FORMAT`. 
+---@field meta_to_context fun(meta: Meta, blocks_writer: BlocksWriter, inlines_writer: InlinesWriter) Creates template context from the document’s Meta data, using the given functions to convert `Blocks` and `Inlines` to `Doc` values.
 
+---Constructors for types which are not part of the pandoc AST.
 ---@class PandocTypesModule
----@field Version
+---@field Version fun(v: string|integer[]|integer): integer[] Creates a Version object.
 
----@class PandocZipModule
----@field Archive
----@field Entry
----@field read_entry
----@field zip
+---@class ZipArchive A zip Archive.
+---@field entries ZipEntry[] Files in this zip archive.
+---@field bytestring fun(self: ZipArchive): string Returns the raw binary `string` representation of the archive.
+---@field extract fun(self: ZipArchive, opts?: ZipOptions) Extract all files from this archive, creating directories as needed. Note that the last-modified time is set correctly only in POSIX, not in Windows. This function fails if encrypted entries are present.
+
+---@class ZipEntry An entry in a `ZipArchive`.
+---@field modtime integer Modification time (seconds since unix epoch).
+---@field path string Relative path, using `/` as separator.
+---@field contents fun(self: ZipEntry, password?: string): string Binary contents of this entry.
+
+---@class ZipOptions
+---@field recursive? boolean Recurse directories when set to `true`.
+---@field verbose? boolean Print info messages to stdout.
+---@field destination? string The directory in which to extract.
+---@field location? string It is used as path name, defining where files are placed.
+---@field preserve_symlinks? boolean Whether symbolic links are preserved as such. This option is ignored on Windows.
+
+---Functions to create, modify, and extract files from zip archives.
+---@class PandocZipModule Functions to create, modify, and extract files from zip archives. The module can be called as a function, in which case it behaves like its `zip` function.
+---@field Archive fun(bytestring_or_entries?: string|ZipEntry[]): ZipArchive Reads an Archive structure from a raw zip archive or a list of Entry items; throws an error if the given string cannot be decoded into an archive. The argument defaults to an empty list of `ZipEntry`.
+---@field Entry fun(path: string, contents: string, modtime?: integer): ZipEntry Generates a `ZipEntry` from a filepath, uncompressed content, and the file’s modification time.
+---@field read_entry fun(filepath: string, opts?: ZipOptions): ZipEntry Generates a ZipEntry from a file or directory.
+---@field zip fun(filepaths: string[], opts: ZipOptions): ZipArchive Package and compress the given files into a new Archive.

@@ -1,22 +1,23 @@
 # pandoc-luals-annotations
 
 Type annotations for Pandoc Lua filters and custom writers/readers
-with [Lua Language Server - LuaLs](https://luals.github.io) (VS code extension).
+with [Lua Language Server - LuaLS](https://luals.github.io) (VS code extension).
 
-## How to get help about pandoc types with LuaLs
+## How to get help about pandoc types with LuaLS
 
-Just copy theh `pandoc-types-annotations.lua` file among your sources,
-and put the following line in your sources to get help about types by LuaLs:
+Just copy the `pandoc-types-annotations.lua` file among your sources,
+and write the following line in your code:
 
 ```lua
 ---@module "pandoc-types-annotations"
 ```
 
-That file contains no lua code, just comments.
+`pandoc-types-annotations.lua` contains no lua code, just comments
+used by LuaLS to provide you information about pandoc types.
 
 ## Prevent `undefined-global` warnings
 
-LuaLs does not know about global data structures provided by pandoc.
+LuaLS does not know about global data structures provided by pandoc.
 
 So it complains with warnings like this:
 
@@ -25,7 +26,7 @@ Undefined global `pandoc`. Lua Diagnostics. (undefined-global)
 (global) pandoc: unknown
 ```
 
-The quick solutions LuaLs suggests to add some configurations 
+The quick solutions LuaLS suggests is to add some configurations 
 in the `.vscode` folder in the root of your project, or
 to add a line like these:
 
@@ -41,5 +42,5 @@ in the next line.
 There's a better solution for globals provided by pandoc:
 just put the `.luarc.json` you find in this repo
 in the root directory of your project to prevent
-those LuaLs warnings, without the need to annotate
+those LuaLS warnings, without the need to annotate
 your code with `---@diagnostic ...` lines.

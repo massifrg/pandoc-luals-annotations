@@ -6,7 +6,7 @@ with [Lua Language Server](https://luals.github.io).
 Just put the following line in your sources to get help about types by LuaLs:
 ---@module "pandoc-types-annotations"
 
-You can download/update this file from:
+This is version 0.1.0; you can look for updates of this file at:
 https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pandoc-types-annotations.lua
 ]]--
 

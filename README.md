@@ -41,7 +41,7 @@ local function hasClass(element)
 end
 ```
 
-## Prevent `undefined-global` warnings
+## Prevent `undefined-global` warnings with `.luarc.json`
 
 LuaLS does not know about global data structures provided by pandoc.
 
@@ -70,3 +70,22 @@ just put the `.luarc.json` you find in this repo
 in the root directory of your project to prevent
 those LuaLS warnings, without the need to annotate
 your code with `---@diagnostic ...` lines.
+
+Here's its contents:
+
+```json
+{
+  "diagnostics.globals": [
+    "FORMAT",
+    "PANDOC_READER_OPTIONS",
+    "PANDOC_WRITER_OPTIONS",
+    "PANDOC_VERSION",
+    "PANDOC_API_VERSION",
+    "PANDOC_SCRIPT_FILE",
+    "PANDOC_STATE",
+    "pandoc",
+    "lpeg",
+    "re"
+  ]
+}
+```

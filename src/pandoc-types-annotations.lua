@@ -6,11 +6,11 @@ with [Lua Language Server](https://luals.github.io).
 Just put the following line in your sources to get help about types by LuaLs:
 ---@module "pandoc-types-annotations"
 
-This is version 0.1.0; you can look for updates of this file at:
+This is version 0.1.1; you can look for updates of this file at:
 https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pandoc-types-annotations.lua
 ]]--
 
----@class List A Pandoc List.
+---@class List<T>: {[integer]: T} A Pandoc List.
 
 ---@class EmptyList An empty List.
 
@@ -421,7 +421,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field LineBlock fun(content: List<Inlines>): LineBlock `LineBlock` constructor.
 ---@field LineBreak fun(): LineBreak `LineBreak` constructor.
 ---@field Link fun(content: Inlines, target: string, title?: string, attr?: Attr): Link `Link` constructor.
----@field List fun(items: table): List `List` constructor
+---@field List fun(items?: table): List `List` constructor
 ---@field ListAttributes fun(start?: integer, style?: ListNumberStyle, delimiter?: ListNumberDelim): ListAttributes `ListAttributes` constructor.
 ---@field LowerAlpha string
 ---@field LowerRoman string
@@ -552,12 +552,12 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field nestle fun(doc: Doc): Doc Removes leading blank lines from a `Doc`.
 ---@field nowrap fun(doc: Doc): Doc Makes a `Doc` non-reflowable.
 ---@field offset fun(doc: Doc): integer|string Returns the width of a `Doc` as number of characters.
----@field parens fun(doc: Doc): Doc Puts the `Doc` in parentheses. 
+---@field parens fun(doc: Doc): Doc Puts the `Doc` in parentheses.
 ---@field prefixed fun(doc: Doc, prefix: string): Doc Uses the specified string as a prefix for every line of the inside document (except the first, if not at the beginning of the line).
 ---@field quotes fun(doc: Doc): Doc Wraps a `Doc` in single quotes.
 ---@field rblock fun(doc: Doc, width: integer): Doc Creates a block with the given width and content, aligned to the right.
 ---@field real_length fun(str: string): integer|string Returns the real length of a string in a monospace font: `0` for a combining character, `1` for a regular character, `2` for an East Asian wide character.
----@field render fun(doc: Doc, colwidth: integer): Doc Render `Doc`. The text is reflowed on breakable spaces to match the given line length. Text is not reflowed if the line length parameter is omitted or `nil`. 
+---@field render fun(doc: Doc, colwidth: integer): Doc Render `Doc`. The text is reflowed on breakable spaces to match the given line length. Text is not reflowed if the line length parameter is omitted or `nil`.
 ---@field space userdata A breaking (reflowable) space.
 ---@field update_column fun(doc: Doc, i: integer): integer|string Returns the column that would be occupied by the last laid out character, starting from `i`.
 ---@field vfill fun(border: string): Doc An expandable border that, when placed next to a box, expands to the height of the box. Strings cycle through the list provided.
@@ -659,7 +659,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@class PandocTemplateModule
 ---@field apply fun(template: Template, context: table): Pandoc Applies a context with variable assignments to a template, returning the rendered template. The context parameter must be a table with variable names as keys and `Doc`, `string`, `boolean`, or `table` as values, where the table can be either be a list of the aforementioned types, or a nested context.
 ---@field compile fun(template: string, templates_path?: string[]): Template Compiles a template string into a Template object usable by pandoc. If the `templates_path` parameter is specified, should be the file path associated with the template. It is used when checking for partials. Partials will be taken only from the default data files if this parameter is omitted.
----@field default fun(writer?: string): Template Returns the default template for a given writer as a string. An error if no such template can be found. `writer` defaults to the global `FORMAT`. 
+---@field default fun(writer?: string): Template Returns the default template for a given writer as a string. An error if no such template can be found. `writer` defaults to the global `FORMAT`.
 ---@field meta_to_context fun(meta: Meta, blocks_writer: BlocksWriter, inlines_writer: InlinesWriter) Creates template context from the document’s Meta data, using the given functions to convert `Blocks` and `Inlines` to `Doc` values.
 
 ---Constructors for types which are not part of the pandoc AST.

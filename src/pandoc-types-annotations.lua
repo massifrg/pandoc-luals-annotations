@@ -272,8 +272,8 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field DefinitionList? fun(definitionlist: DefinitionList): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Header?         fun(header: Header): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete. `nil` = leave untouched, `EmptyList` = delete.
 ---@field HorizontalRule? fun(): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
----@field Table?          fun(): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
----@field Figure?         fun(): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
+---@field Table?          fun(table: Table): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
+---@field Figure?         fun(figure: Figure): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Div?            fun(div: Div): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Str?            fun(str: Str): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Emph?           fun(emph: Emph): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
@@ -289,7 +289,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field Space?          fun(): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field SoftBreak?      fun(): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field LineBreak?      fun(): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
----@field Math?           fun(): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
+---@field Math?           fun(math: Math): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field RawInline?      fun(rawinline: RawInline): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Link?           fun(link: Link): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Image?          fun(image: Image): InlineFilterResult `nil` = leave untouched, `EmptyList` = delete.

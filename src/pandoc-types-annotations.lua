@@ -178,6 +178,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field citations List<Citation>
 
 ---@class Code: Inline,WithAttr A Pandoc `Code`.
+---@field text string
 
 ---@class Space: Inline A Pandoc `Space`.
 

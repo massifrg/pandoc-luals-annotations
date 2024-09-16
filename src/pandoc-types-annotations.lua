@@ -80,7 +80,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field level integer
 ---@field content Inlines
 
----@class HorizontalRule A Pandoc `HorizontalRule`.
+---@class HorizontalRule: Block A Pandoc `HorizontalRule`.
 
 ---@class Caption A Pandoc `Table` or `Figure` caption
 ---@field long Blocks

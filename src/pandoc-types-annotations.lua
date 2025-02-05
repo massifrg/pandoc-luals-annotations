@@ -6,7 +6,7 @@ with [Lua Language Server](https://luals.github.io).
 Just put the following line in your sources to get help about types by LuaLs:
 ---@module "pandoc-types-annotations"
 
-This is version 0.1.1; you can look for updates of this file at:
+This is version 0.2.0; you can look for updates of this file at:
 https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pandoc-types-annotations.lua
 ]]--
 
@@ -28,12 +28,17 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 
 ---@class Block: WithTag A Pandoc `Block`.
 ---@field content List The content of the Block.
+---@field walk fun(self: Block, filter: Filter)
 
 ---@class Inline: WithTag A Pandoc `Inline`.
 ---@field content List The content of the Inline.
+---@field walk fun(self: Inline, filter: Filter)
 
----@alias Blocks List<Block>
----@alias Inlines List<Inline>
+---@class Blocks: List<Block>
+---@field walk fun(self: Blocks, filter: Filter)
+
+---@class Inlines: List<Inlines>
+---@field walk fun(self: Inlines, filter: Filter)
 
 ---@class Plain: Block A Pandoc `Plain`.
 ---@field content Blocks
@@ -237,6 +242,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@class Pandoc
 ---@field blocks Blocks
 ---@field meta Meta
+---@field walk fun(self: Pandoc, filter: Filter)
 
 ---@class ChunkedDoc
 ---@field chunks Chunk[] List of chunks that make up the document.
@@ -262,8 +268,8 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@class Filter
 ---@field traverse?       "topdown"|"typewise" Traversal order of this filter (default: `typewise`).
 ---@field Pandoc?         fun(doc: Pandoc): Pandoc|nil `nil` = leave untouched.
----@field Blocks?         fun(blocks: List): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
----@field Inlines?        fun(inlines: List): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
+---@field Blocks?         fun(blocks: Blocks): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
+---@field Inlines?        fun(inlines: Inlines): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Plain?          fun(plain: Plain): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field Para?           fun(para: Para): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.
 ---@field LineBlock?      fun(lineblock: LineBlock): BlockFilterResult `nil` = leave untouched, `EmptyList` = delete.

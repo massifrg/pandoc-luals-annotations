@@ -34,7 +34,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 
 ---@class Attr A Pandoc `Attr` data structure.
 ---@field identifier string
----@field classes    string[]
+---@field classes    List<string>
 ---@field attributes table<string,string>
 
 ---@class WithTag

@@ -40,6 +40,9 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@class Inlines: List<Inlines>
 ---@field walk fun(self: Inlines, filter: Filter)
 
+---@alias BlockWithAttr Header|Div|Figure|Table|CodeBlock
+---@alias InlineWithAttr Span|Code|Link|Image
+
 ---@class Plain: Block A Pandoc `Plain`.
 ---@field content Blocks
 

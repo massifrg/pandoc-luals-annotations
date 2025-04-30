@@ -10,7 +10,25 @@ You can look for updates of this file at:
 https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pandoc-types-annotations.lua
 ]] --
 
+---@alias Predicate<T> fun(t: T): boolean
+---@alias MapFunction<T,U> fun(t: T): U
+---@alias Comparator<T> fun(a: T, b: T): boolean
+
 ---@class List<T>: {[integer]: T} A Pandoc List.
+---@field at fun(index: integer, default?: T): T
+---@field clone fun(): List<T>
+---@field extend fun(list: List<T>)
+---@field find fun(needle: T, init?: integer): T|nil,integer|nil
+---@field find_if fun(predicate: Predicate<T>, init?: integer): T|nil,integer|nil
+---@field filter fun(predicate: Predicate<T>): List<T>
+---@field includes fun(needle: T, init?: integer): boolean
+---@field insert fun(pos: integer, value: T)
+---@field insert fun(value: T)
+---@field iter fun(step?: integer): IteratorFunction
+---@field map fun(f: MapFunction<T,U>): List<U>
+---@field new fun(t?: table<T>):List<T>
+---@field remove fun(pos?: integer)
+---@field sort fun(comparator: Comparator<T>)
 
 ---@class EmptyList An empty List.
 

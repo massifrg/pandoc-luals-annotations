@@ -3,6 +3,8 @@
 Type annotations for Pandoc Lua filters and custom writers/readers
 with [Lua Language Server - LuaLS](https://luals.github.io) (VS code extension).
 
+A similar project is [pandoc-lua-types](https://github.com/rnwst/pandoc-lua-types).
+
 ## How to get help about pandoc types with LuaLS
 
 Just copy the `pandoc-types-annotations.lua` file among your sources,

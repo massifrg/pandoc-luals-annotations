@@ -62,7 +62,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@alias InlineWithAttr Span|Code|Link|Image
 
 ---@class Plain: Block A Pandoc `Plain`.
----@field content Blocks
+---@field content Inlines
 
 ---@class Para: Block A Pandoc `Para`.
 ---@field content Inlines

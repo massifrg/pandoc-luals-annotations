@@ -15,20 +15,20 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@alias Comparator<T> fun(a: T, b: T): boolean
 
 ---@class List<T>: {[integer]: T} A Pandoc List.
----@field at fun(self: List<T>, index: integer, default?: T): T
----@field clone fun(self: List<T>): List<T>
----@field extend fun(self: List<T>, list: List<T>)
----@field find fun(self: List<T>, needle: T, init?: integer): T|nil,integer|nil
----@field find_if fun(self: List<T>, predicate: Predicate<T>, init?: integer): T|nil,integer|nil
----@field filter fun(self: List<T>, predicate: Predicate<T>): List<T>
----@field includes fun(self: List<T>, needle: T, init?: integer): boolean
----@field insert fun(self: List<T>, pos: integer, value: T)
----@field insert fun(self: List<T>, value: T)
----@field iter fun(self: List<T>, step?: integer): IteratorFunction
----@field map fun(self: List<T>, f: MapFunction<T,U>): List<U>
----@field new fun(self: List<T>, t?: table<T>):List<T>
----@field remove fun(self: List<T>, pos?: integer)
----@field sort fun(self: List<T>, comparator: Comparator<T>)
+---@field at fun(self: List<`T`>, index: integer, default?: `T`): `T`
+---@field clone fun(self: List<`T`>): List<`T`>
+---@field extend fun(self: List<`T`>, list: List<`T`>)
+---@field find fun(self: List<`T`>, needle: `T`, init?: integer): `T`|nil,integer|nil
+---@field find_if fun(self: List<`T`>, predicate: Predicate<`T`>, init?: integer): `T`|nil,integer|nil
+---@field filter fun(self: List<`T`>, predicate: Predicate<`T`>): List<`T`>
+---@field includes fun(self: List<`T`>, needle: `T`, init?: integer): boolean
+---@field insert fun(self: List<`T`>, pos: integer, value: `T`)
+---@field insert fun(self: List<`T`>, value: `T`)
+---@field iter fun(self: List<`T`>, step?: integer): IteratorFunction
+---@field map fun(self: List<`T`>, f: MapFunction<`T`,`U`>): List<`U`>
+---@field new fun(self: List<`T`>, t?: table<`T`>):List<`T`>
+---@field remove fun(self: List<`T`>, pos?: integer)
+---@field sort fun(self: List<`T`>, comparator: Comparator<`T`>)
 
 ---@class EmptyList An empty List.
 

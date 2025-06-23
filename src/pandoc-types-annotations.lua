@@ -283,8 +283,8 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field unlisted boolean Whether the section in this chunk should be listed in the TOC even if the chunk has no section number.
 ---@field contents Block[] The chunk’s block contents.
 
----@alias InlineFilterResult nil|Inline|Inlines|EmptyList
----@alias BlockFilterResult nil|Block|Blocks|EmptyList
+---@alias InlineFilterResult nil|Inline|Inlines|EmptyList|List<Inlines>
+---@alias BlockFilterResult nil|Block|Blocks|EmptyList|List<Blocks>
 
 ---@class Filter
 ---@field traverse?       "topdown"|"typewise" Traversal order of this filter (default: `typewise`).

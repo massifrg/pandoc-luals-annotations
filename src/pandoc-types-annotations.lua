@@ -499,6 +499,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field format PandocFormatModule
 ---@field json PandocJsonModule
 ---@field layout PandocLayoutModule
+---@field log PandocLogModule
 ---@field mediabag PandocMediabagModule
 ---@field path PandocPathModule
 ---@field pipe fun(command: string, args: string[], input: string): string
@@ -590,6 +591,11 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field space userdata A breaking (reflowable) space.
 ---@field update_column fun(doc: Doc, i: integer): integer|string Returns the column that would be occupied by the last laid out character, starting from `i`.
 ---@field vfill fun(border: string): Doc An expandable border that, when placed next to a box, expands to the height of the box. Strings cycle through the list provided.
+
+---@class PandocLogModule
+---@field info fun(message: string) Reports a ScriptingInfo message to pandoc’s logging system.
+---@field silence fun(fn: function): List<string> Applies the function to the given arguments while preventing log messages from being added to the log. 
+---@field warn fun(message: string) Reports a ScriptingWarning to pandoc’s logging system. The warning will be printed to stderr unless logging verbosity has been set to ERROR.
 
 ---@class IteratorState An opaque value to be passed to the iterator function.
 

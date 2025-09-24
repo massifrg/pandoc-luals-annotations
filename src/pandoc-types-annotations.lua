@@ -89,8 +89,11 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field delimiter ListNumberDelim Delimiter of list numbers.
 
 ---@class OrderedList: Block,ListAttributes A Pandoc `OrderedList`
----@field items List<Blocks>
+---@field content List<Blocks>
 ---@field listAttributes ListAttributes|nil
+---@field start integer
+---@field style string
+---@field delimiter string
 
 ---@class BulletList: Block A Pandoc `BulletList`
 ---@field content List<Blocks>

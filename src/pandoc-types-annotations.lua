@@ -590,7 +590,7 @@ https://raw.githubusercontent.com/massifrg/pandoc-luals-annotations/main/src/pan
 ---@field quotes fun(doc: Doc): Doc Wraps a `Doc` in single quotes.
 ---@field rblock fun(doc: Doc, width: integer): Doc Creates a block with the given width and content, aligned to the right.
 ---@field real_length fun(str: string): integer|string Returns the real length of a string in a monospace font: `0` for a combining character, `1` for a regular character, `2` for an East Asian wide character.
----@field render fun(doc: Doc, colwidth: integer): Doc Render `Doc`. The text is reflowed on breakable spaces to match the given line length. Text is not reflowed if the line length parameter is omitted or `nil`.
+---@field render fun(doc: Doc, colwidth: integer, style?: 'plain'|'ansi'): string Render `Doc`. The text is reflowed on breakable spaces to match the given line length. Text is not reflowed if the line length parameter is omitted or `nil`.
 ---@field space userdata A breaking (reflowable) space.
 ---@field update_column fun(doc: Doc, i: integer): integer|string Returns the column that would be occupied by the last laid out character, starting from `i`.
 ---@field vfill fun(border: string): Doc An expandable border that, when placed next to a box, expands to the height of the box. Strings cycle through the list provided.

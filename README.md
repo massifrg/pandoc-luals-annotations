@@ -1,5 +1,9 @@
 # pandoc-luals-annotations
 
+The development of this project has ended, because there's a successor:
+[lua-craters/pandoc-annotations](https://github.com/lua-craters/pandoc-annotations),
+to which I encourage you to switch.
+
 Type annotations for Pandoc Lua filters and custom writers/readers
 with [Lua Language Server - LuaLS](https://luals.github.io) (VS code extension).
 
